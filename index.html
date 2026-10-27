@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Opening your chat</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>
+var id=(location.hash||'').replace('#','')||new URLSearchParams(location.search).get('id')||'';
+var target=id?'claude://claude.ai/epitaxy/'+id:'';
+if(target){setTimeout(function(){location.href=target;},100);}
+</script></head>
+<body style="font:28px -apple-system,sans-serif;padding:40px;background:#111;color:#eee">
+<p id="msg">Opening your chat in Claude.</p>
+<p>If nothing happens, <a id="again" style="color:#8cf" href="#">click here</a>.</p>
+<script>var a=document.getElementById('again');if(target){a.href=target;}else{document.getElementById('msg').textContent='No chat id in this link.';}</script>
+</body></html>
