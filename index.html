@@ -1,12 +1,22 @@
 <!doctype html><html><head><meta charset="utf-8"><title>Opening your chat</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <script>
-var id=(location.hash||'').replace('#','')||new URLSearchParams(location.search).get('id')||'';
-var target=id?'claude://claude.ai/epitaxy/'+id:'';
-if(target){setTimeout(function(){location.href=target;},100);}
+// Link forms: #<chat id> (a fixed chat) or #lane=<slug> (the lane's CURRENT boss, read from lanes.json).
+var raw=(location.hash||'').replace('#','')||new URLSearchParams(location.search).get('id')||'';
+var target='';
+function go(id){target='claude://claude.ai/epitaxy/'+id;var a=document.getElementById('again');if(a)a.href=target;setTimeout(function(){location.href=target;},100);}
+function say(t){var m=document.getElementById('msg');if(m)m.textContent=t;}
+if(raw.indexOf('lane=')===0){
+  var slug=raw.slice(5).toLowerCase();
+  fetch('lanes.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+    var id=j[slug];
+    if(id){go(id);} else {say('No boss chat for this lane yet');}
+  }).catch(function(){say('Could not read the lane list. Try again in a minute.');});
+} else if(raw){go(raw);}
 </script></head>
 <body style="font:28px -apple-system,sans-serif;padding:40px;background:#111;color:#eee">
 <p id="msg">Opening your chat in Claude.</p>
 <p>If nothing happens, <a id="again" style="color:#8cf" href="#">click here</a>.</p>
-<script>var a=document.getElementById('again');if(target){a.href=target;}else{document.getElementById('msg').textContent='No chat id in this link.';}</script>
+<script>if(!raw){say('No chat id in this link.');}</script>
 </body></html>
